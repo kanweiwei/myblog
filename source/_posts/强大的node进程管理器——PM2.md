@@ -1,0 +1,69 @@
+---
+title: 强大的node进程管理器——PM2
+date: 2017.03.08 22:46
+tags:
+---
+
+> 最近，我在搭建个人博客的时候，才注意到node的进程管理器原来除了forever，还有个pm2，看了下[官方文档](http://pm2.keymetrics.io/docs/usage/cluster-mode/)，确实不错！
+
+### 运行模式
+1.  fork_mode
+2.  cluster_mode 
+`pm2 start app.js` 默认开启的是fork模式，`pm2 start app.js -i max` 是开启cluster模式（集群模式）。cluster模式的好处，请自行百度。
+
+### pm2可以通过配置文件启动1个或多个node应用
+```
+// process.json(也可以yml等配置文件)
+{
+  "apps" : [{
+    "name"      : "myblog",
+    "script"    : "app.js",
+    "instances" : 2, //利用2个核心
+    "exec_mode" : "cluster"
+  },{
+    "name"      : "myblog-test",
+    "script"    : "app.js",
+    "instances" : "max",
+    "exec_mode" : "cluster",
+    "watch"     : true,
+    "env": {
+      "NODE_ENV": "development"
+    },
+    "env_production" : {
+       "NODE_ENV": "production"
+    },
+    "interpreter"   : "/usr/bin/node",
+    "interpreter_args"  :  "--harmony",
+    "node_args"   : "--harmony", 
+    "log_date_format"   : "YYYY-MM-DD HH:mm Z",
+    "error_file"        :  "/web/klhut/www/logs/err.log",
+    "out_file"          :  "/web/klhut/www/logs/out.log",
+    "pid_file"          : "/web/klhut/www/logs/app-id.pid"
+  }]
+}
+// 启动应用
+pm2 start process.json
+```
+
+由于我还使用了nvm管理node版本，所以我在项目目录下创建了个.nvmrc文件
+```
+$  touch .nvmrc
+$  echo 7 > .nvmrc  
+```
+并在package.json里写了几个命令
+```
+"scripts": {
+  "start": "shell=(nvm use 7 ) && pm2 start ./process.json",
+  "restart": "pm2 restart ./process.json",
+  "stop": "pm2 stop ./process.json",
+  "delete": "npm run stop && pm2 delete ./process.json"
+}
+```
+
+pm2还可以设置开机自启动
+```
+$ pm2 save
+$ pm2  startup centos       //我的服务器是centos 7.x的，具体看文档
+```
+
+暂时就到这里：P
