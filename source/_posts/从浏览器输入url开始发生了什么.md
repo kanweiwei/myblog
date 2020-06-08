@@ -1,6 +1,6 @@
 ---
 title: 从浏览器输入url开始发生了什么
-data: 2020.06.08
+data: 2020.06.08 11:00
 tags:
 ---
 1. 首先会触发当前页面的beforeunload事件（在这里需要的话可以使用navigator.sendBeacon()发送数据）
