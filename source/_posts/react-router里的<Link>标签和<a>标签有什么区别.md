@@ -1,5 +1,6 @@
 ---
-title: react-router里的<Link>标签和<a>标签有什么区别?
+title: react-router里的&#60;Link&#62;标签和&#60;a&#62;标签有什么区别?
+catalogs: 面试题
 ---
 
 先看 Link 点击事件 handleClick 部分源码
